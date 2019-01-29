@@ -64,3 +64,5 @@ perfos <- sapply(methodes, evaluation)
 colnames(perfos) <- methodes
 rownames(perfos) <- c("cv", "test set")
 print(perfos)
+
+####################fin#####################"
