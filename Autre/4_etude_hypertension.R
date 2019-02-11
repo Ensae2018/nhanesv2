@@ -116,47 +116,48 @@ foreach (i = 1:bloc, .packages = c("gbm","e1071","glmnet","randomForest", "rpart
   # logisque
   mod <- glm(Y~.,data=don[ind!=i,],family="binomial")
   res[ind==i,"log"] <- predict(mod,don[ind==i,],type="response")
-  # XXA <- XX[ind!=i,]
-  # YYA <- YY[ind!=i,]
-  # XXT <- XX[ind==i,]
-  # # ridge
-  # tmp <- cv.glmnet(XXA,YYA,alpha=0,family="binomial")
-  # mod <- glmnet(XXA,YYA,alpha=0,lambda=tmp$lambda.min, family="binomial")
-  # res[ind==i,"ridge"] <- predict(mod,newx=XXT,type="response")
-  # # lass0
-  # tmp <- cv.glmnet(XXA,YYA, alpha=1, family="binomial")
-  # mod <- glmnet(XXA,YYA,alpha=1, lambda =tmp$lambda.1se,family="binomial" )
-  # res[ind==i,"lasso"] <- predict(mod,newx=XXT, type="response")
-  # # elasticnet
-  # tmp <- cv.glmnet(XXA,YYA, alpha=0.5, family="binomial")
-  # mod <- glmnet(XXA,YYA,alpha = 0.5, lambda = tmp$lambda.min, family="binomial")
-  # res[ind==i,"elastic"] <- predict(mod,newx=XXT,type="response")
-  # # foret
-  # mod <- randomForest(Y~., data = don[ind!=i,], ntree=500)
-  # res[ind==i, "foret"] <- predict(mod, don[ind==i,], type="prob")[,2]
-  # # Adaboost
-  # tmp <- gbm(as.numeric(Y)-1~.,data = don[ind!=i,], distribution = "adaboost", interaction.depth = 2,
-  #            shrinkage = 0.1,n.trees = 500)
-  # M <- gbm.perf(tmp)[1]
-  # mod <- gbm(as.numeric(Y)-1~.,data = don[ind!=i,], distribution = "adaboost", interaction.depth = 2,
-  #            shrinkage = 0.1,n.trees = M)
-  # res[ind==i, "adabo"] <- predict(mod, newdata=don[ind==i,], type = "response", n.trees = M)
-  # # Logiboost
-  # tmp <- gbm(as.numeric(Y)-1~.,data=don[ind!=i,], distribution="bernoulli", interaction.depth = 2,
-  #            shrinkage=0.1,n.trees=500)
-  # M <- gbm.perf(tmp)[1]
-  # mod <- gbm(as.numeric(Y)-1~.,data=don[ind!=i,], distribution="bernoulli", interaction.depth = 2,
-  #            shrinkage=0.1,n.trees=M)
-  # res[ind==i, "logibo"] <- predict(mod,newdata=don[ind==i,], type= "response", n.trees = M)
-  # # SVM
-  # mod <- svm(Y~.,data=don[ind!=i,], kernel="linear",probability=T)
-  # # tmp <- tune(svm,Y~.,data=don[ind!=i,], kernel="linear",probability=T,ranges =
-  # #        list(cost=c(0.1,1,10,100)))
-  # # mod <- tmp$best.model
-  # res[ind==i,"svm"] <- attr(predict(mod,newdata = don[ind==i,],probability = T),"probabilities")[,2]
-  # # arbre
-  # mod <- rpart(Y~., data = don[ind!=i,], method="class")
-  # res[ind==i, "arbre"] <- predict(mod, don[ind==i,], type="prob")[,2]
+  XXA <- XX[ind!=i,]
+  YYA <- YY[ind!=i,]
+  XXT <- XX[ind==i,]
+  # ridge
+  tmp <- cv.glmnet(XXA,YYA,alpha=0,family="binomial")
+  mod <- glmnet(XXA,YYA,alpha=0,lambda=tmp$lambda.min, family="binomial")
+  res[ind==i,"ridge"] <- predict(mod,newx=XXT,type="response")
+  # lass0
+  tmp <- cv.glmnet(XXA,YYA, alpha=1, family="binomial")
+  mod <- glmnet(XXA,YYA,alpha=1, lambda =tmp$lambda.1se,family="binomial" )
+  colnames(don[mod$beta@i])
+  res[ind==i,"lasso"] <- predict(mod,newx=XXT, type="response")
+  # elasticnet
+  tmp <- cv.glmnet(XXA,YYA, alpha=0.5, family="binomial")
+  mod <- glmnet(XXA,YYA,alpha = 0.5, lambda = tmp$lambda.min, family="binomial")
+  res[ind==i,"elastic"] <- predict(mod,newx=XXT,type="response")
+  # foret
+  mod <- randomForest(Y~., data = don[ind!=i,], ntree=500)
+  res[ind==i, "foret"] <- predict(mod, don[ind==i,], type="prob")[,2]
+  # Adaboost
+  tmp <- gbm(as.numeric(Y)-1~.,data = don[ind!=i,], distribution = "adaboost", interaction.depth = 2,
+             shrinkage = 0.1,n.trees = 500)
+  M <- gbm.perf(tmp)[1]
+  mod <- gbm(as.numeric(Y)-1~.,data = don[ind!=i,], distribution = "adaboost", interaction.depth = 2,
+             shrinkage = 0.1,n.trees = M)
+  res[ind==i, "adabo"] <- predict(mod, newdata=don[ind==i,], type = "response", n.trees = M)
+  # Logiboost
+  tmp <- gbm(as.numeric(Y)-1~.,data=don[ind!=i,], distribution="bernoulli", interaction.depth = 2,
+             shrinkage=0.1,n.trees=500)
+  M <- gbm.perf(tmp)[1]
+  mod <- gbm(as.numeric(Y)-1~.,data=don[ind!=i,], distribution="bernoulli", interaction.depth = 2,
+             shrinkage=0.1,n.trees=M)
+  res[ind==i, "logibo"] <- predict(mod,newdata=don[ind==i,], type= "response", n.trees = M)
+  # SVM
+  mod <- svm(Y~.,data=don[ind!=i,], kernel="linear",probability=T)
+  # tmp <- tune(svm,Y~.,data=don[ind!=i,], kernel="linear",probability=T,ranges =
+  #        list(cost=c(0.1,1,10,100)))
+  # mod <- tmp$best.model
+  res[ind==i,"svm"] <- attr(predict(mod,newdata = don[ind==i,],probability = T),"probabilities")[,2]
+  # arbre
+  mod <- rpart(Y~., data = don[ind!=i,], method="class")
+  res[ind==i, "arbre"] <- predict(mod, don[ind==i,], type="prob")[,2]
 }
 fin <- Sys.time()
 fin-deb
