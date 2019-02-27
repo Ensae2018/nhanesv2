@@ -45,7 +45,6 @@ acp <- PCA(donb,scale.unit=T,graph = F)
 barplot(acp$eig[,2])
 plot(acp, choix = "ind", cex=0.5)
 plot(acp, choix = "var", cex=0.5)
-score()
 acp$eig
 acp$var
 library(factoextra)
@@ -84,11 +83,54 @@ plot(as.dendrogram(cah))
 rect.hclust(cah,h=140)
 cutree(cah, h=140)
 
-# Methode de Kmeans
-partition <- 1:30
-km <- kmeans
-for (i in 1:30){
-  kmk <- kmeans()
-  kmki]
-}
 names(km)
+
+
+# Classification nutriments
+library(FactoMineR)
+library(factoextra)
+library("dplyr")
+don <- read.csv("data/nhanes_hyper_mice.csv", row.names = 1)
+donb <- don[,c(which(colnames(don)=="high_cholesterol_level"),
+               which(colnames(don)=="Doctor_told_you_have_diabetes"),
+               which(colnames(don)=="Y"),
+               which(colnames(don)=="Age_in_years_at_screening"),
+               which(colnames(don)=="Sleep_hours"),
+               which(colnames(don)=="Energy_kcal"):which(colnames(don)=="Moisture_gm"))]
+acp <- PCA(donb,scale.unit=T,graph = F,quali.sup = c(1,2,3),quanti.sup = c(4,5))
+plot(acp,choix = "var")
+plot(acp,choix = "ind", habillage = 3)
+barplot(acp$eig[,2])
+acp$eig
+var <- acp$var
+partition <- 1:15
+for (i in 1:15){
+  kmk <- kmeans(var$coord,centers = i, nstart = 10)
+  partition[i]= kmk$tot.withinss/kmk$totss*100
+}
+plot(partition, type="h")
+km <- kmeans(var$coord, center=7, nstart = 25)
+tempo <- as.data.frame(km$cluster)
+tempo <- cbind(row.names(tempo),tempo)
+row.names(tempo) <- NULL
+colnames(tempo) <- c("nutriment","classe")
+list(tempo[which(tempo$classe==1),],tempo[which(tempo$classe==2),])
+tempo[which(tempo$classe==3),]
+tempo[which(tempo$classe==4),]
+tempo[which(tempo$classe==5),]
+tempo[which(tempo$classe==6),]
+tempo[which(tempo$classe==7),]
+
+cah <- hclust(dist(scale(var$coord)),method = "ward.D2")
+plot(as.dendrogram(cah))
+rect.hclust(cah,h=6)
+tempo2 <- as.data.frame(cutree(cah, h=6))
+tempo2 <- cbind(row.names(tempo2),tempo2)
+row.names(tempo2) <- NULL
+colnames(tempo2) <- c("nutriment","classe")
+tempo2[which(tempo2$classe==1),]
+tempo2[which(tempo2$classe==2),]
+tempo2[which(tempo2$classe==3),]
+tempo2[which(tempo2$classe==4),]
+tempo2[which(tempo2$classe==5),]
+tempo2[which(tempo2$classe==6),]

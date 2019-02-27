@@ -79,9 +79,9 @@ mod_logiboost <- gbm(as.numeric(Y)-1~.,data=don, distribution="bernoulli", inter
 varimplogibo <- variable_imp(summary(mod_logiboost),t=3,mot="logiboost")
 
 # ?)Importance variable pour le modele SVM (je ne sais pas appliquer la feature selection)
-mod_svm <- svm(Y~.,data=don, kernel="linear",probability=T)
-tmp <- tune(svm,Y~.,data=don, kernel="linear",probability=T,range=list(cost=c(0.1,1,10)))
-mod <- tmp$best.model
+#mod_svm <- svm(Y~.,data=don, kernel="linear",probability=T)
+#tmp <- tune(svm,Y~.,data=don, kernel="linear",probability=T,range=list(cost=c(0.1,1,10)))
+#mod <- tmp$best.model
 
 # Croisement des tables d'importance des variables
 choix_var <- varimplog %>%
