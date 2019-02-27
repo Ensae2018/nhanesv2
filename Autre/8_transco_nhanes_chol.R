@@ -11,8 +11,10 @@ signification <- read.csv("var_lib.csv")
 signification$X <- NULL
 
 # importer le fichier Nhanes_hypertension pour mon cas
-nhanes_hyper <- read.csv("data/nhanes_hyper.csv")
+nhanes_hyper <- read.csv("data/nhanes_chol_mice_final.csv")
 nhanes_hyper$X <- NULL
+nhanes_hyper$X.1 <- NULL
+nhanes_hyper$SEQN <- NULL
 
 # remplacer le nom de la variable à expliquer par Y au lieu de nhanes.y
 names(nhanes_hyper)[ncol(nhanes_hyper)] <- "y"
@@ -79,4 +81,4 @@ names(nhanes_hyper) <- vec
 # Annulation d'un champs non utile pour mon cas hypertension
 nhanes_hyper$`Interview/Examination status` <- NULL
 
-write.csv(nhanes_hyper,"data/nhanes_hyper_transcodifie.csv")
+write.csv(nhanes_hyper,"data/nhanes_cho_transcodifie.csv")
