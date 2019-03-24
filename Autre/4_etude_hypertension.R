@@ -108,14 +108,26 @@ YY <- as.matrix(model.matrix(~.,don)[,ncol(model.matrix(~.,don))])
 
 bloc <- 4
 ind= sample(1:nrow(don) %% 4+1)
-res <- data.frame(Y=don$Y, log=0, ridge=0, lasso=0, elastic=0,
+res <- data.frame(Y=don$Y, log=0, logReduit=0, ridge=0, lasso=0, elastic=0,
                   foret=0, adabo=0, logibo=0, svm=0, pm=0, arbre=0)
 set.seed(1234)
 deb <-   Sys.time()
-foreach (i = 1:bloc, .packages = c("gbm","e1071","glmnet","randomForest", "rpart")) %dopar% {
+# foreach (i = 1:bloc, .packages = c("gbm","e1071","glmnet","randomForest", "rpart")) %dopar% {
+for (i in 1:bloc){
   # logisque
   mod <- glm(Y~.,data=don[ind!=i,],family="binomial")
   res[ind==i,"log"] <- predict(mod,don[ind==i,],type="response")
+  # logistique 9 variable
+  mod <- glm(Y~Age_in_years_at_screening+
+  Systolic_Blood_pres_2nd_rdg_mm_Hg+
+  high_cholesterol_level+
+  Body_Mass_Index_kg_m_2+
+  Doctor_ever_said_you_were_overweight+
+  Ever_told_doctor_had_trouble_sleeping+
+  Phosphorus_mg+
+  Diastolic_Blood_pres_1st_rdg_mm_Hg+
+  Sodium_mg,data=don[ind!=i,],family="binomial")
+  res[ind==i,"logReduit"] <- predict(mod,don[ind==i,],type="response")
   XXA <- XX[ind!=i,]
   YYA <- YY[ind!=i,]
   XXT <- XX[ind==i,]
@@ -126,7 +138,7 @@ foreach (i = 1:bloc, .packages = c("gbm","e1071","glmnet","randomForest", "rpart
   # lass0
   tmp <- cv.glmnet(XXA,YYA, alpha=1, family="binomial")
   mod <- glmnet(XXA,YYA,alpha=1, lambda =tmp$lambda.1se,family="binomial" )
-  colnames(don[mod$beta@i])
+  #colnames(don[mod$beta@i])
   res[ind==i,"lasso"] <- predict(mod,newx=XXT, type="response")
   # elasticnet
   tmp <- cv.glmnet(XXA,YYA, alpha=0.5, family="binomial")
@@ -161,7 +173,25 @@ foreach (i = 1:bloc, .packages = c("gbm","e1071","glmnet","randomForest", "rpart
 }
 fin <- Sys.time()
 fin-deb
+i=1
 
+newdon <- as.data.frame(cbind(model.matrix(Y~.,don),Y=as.numeric(don$Y)-1))
+class(newdon)
+newdon$Y <- as.factor(newdon$Y)
+library(neuralnet)
+# Binary classification
+nn <- neuralnet(Y== 1 ~ GenderMale+ Age_in_years_at_screening, newdon,  linear.output = FALSE)
+dput(colnames(newdon))
+nn <- neuralnet(Y== "1" ~ On_special_diet , don, linear.output = FALSE)
+data(iris)
+train_idx <- sample(nrow(iris), 2/3 * nrow(iris))
+iris_train <- iris[train_idx, ]
+iris_test <- iris[-train_idx, ]
+# Binary classification
+nn <- neuralnet(Species == "setosa" ~ Petal.Length + Petal.Width, iris_train, linear.output = FALSE)
+pred <- predict(nn, iris_test)
+
+colnames(newdon)
 ############################################
 # Perceptron multicouche
 ############################################
@@ -174,7 +204,7 @@ for (i in 1:bloc){
 
   # architecture
   pm.keras %>%
-    layer_dense(units = 2, input_shape=ncol(XXA), activation = "sigmoid") %>%
+    layer_dense(units = 8, input_shape=ncol(XXA), activation = "sigmoid") %>%
     layer_dense(units = 1, activation = "sigmoid")
 
   # configuration de l'apprentissage
@@ -188,7 +218,7 @@ for (i in 1:bloc){
   pm.keras %>% fit(
     XXA <- XX[ind!=i,],
     YYA <- YY[ind!=i,],
-    epochs=80,
+    epochs=15,
     batch_size=8
   )
 
@@ -196,6 +226,7 @@ for (i in 1:bloc){
   res[ind==i,"pm"] <- pm.keras %>% predict(XX[ind==i,])
 }
 
+write.csv2(res,"res_hyp.csv")
 ############################################
 monerreur <- function(X, Y, seuil=0.5){
   table(cut(X, breaks = c(0,seuil,1)), Y)
@@ -232,8 +263,11 @@ auc(res[,1],res[,9])#SVM
 auc(res[,1],res[,10])#perceptron
 auc(res[,1],res[,11])#arbre
 
-plot(roc(res[,1],res[,2]))
+plot(roc(res[,1],res[,2]), print.thres = "best", print.thres.best.method = "closest.topleft")
 lines(roc(res[,1],res[,3]), col="red")#log
+points(coords(roc(res[,1],res[,3]), "best", best.method = "closest.topleft")[2],
+       coords(roc(res[,1],res[,3]), "best", best.method = "closest.topleft")[3],
+       col="red")
 lines(roc(res[,1],res[,4]), col="blue")#Ridge
 lines(roc(res[,1],res[,5]), col="green")#Lasso
 lines(roc(res[,1],res[,6]), col="brown")#Elastic
@@ -243,3 +277,7 @@ lines(roc(res[,1],res[,9]), col="grey")#SVM
 lines(roc(res[,1],res[,9]), col="black")#perceptron
 lines(roc(res[,1],res[,9]), col="orange")#arbre
 
+coords(roc(res[,1],res[,4]), "best", ret=c("threshold", "specificity", "sensitivity", "accuracy"))
+coords(roc(res[,1],res[,3]), "best", best.method = "closest.topleft")
+plot(roc(res[,1],res[,4]), print.thres = "best", print.thres.best.method = "closest.topleft")
+coords(roc(res[,1],res[,4]), x = "local maximas", ret='threshold')

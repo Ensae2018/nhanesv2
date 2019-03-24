@@ -1,21 +1,24 @@
 "variable";"imp_log";"imp_ridge";"imp_lasso";"imp_elastic";"imp_foret";"imp_adaboost";"imp_logiboost"
-"Age_in_years_at_screening";6,48870592227727;NA;0,241127076442337;0,191277906694978;6,03271591332046;8,36578831410081;8,2686501180918
-"high_cholesterol_level";5,67012248581936;6,0594520735561;7,20296027633023;6,87254713321709;2,88414699674148;2,29662172747053;2,7024264960153
-"Doctor_ever_said_you_were_overweight";2,09440832662025;3,03330520511692;3,70918963462314;3,56492174759891;NA;0,865880702173786;0,634718554425143
-"Ever_told_doctor_had_trouble_sleeping";1,97653615717816;2,60033638132067;3,06112655243917;2,98502906766643;NA;0,203418477140912;0,180678920644089
-"On_special_diet";1,42505284167818;2,35293307243182;1,31028210839137;2,24400084082486;NA;NA;NA
-"Doctor_told_you_have_diabetes";0,691560663311882;1,62256260709566;0,185853030445786;0,707044100225446;1,07178460745257;0,678637356331729;0,807778277766119
-"Vitamin_D_D2_D3_mcg";0,675370040705321;NA;NA;NA;NA;NA;NA
-"Sodium_mg";0,67463676433248;NA;NA;NA;NA;NA;NA
-"Overall_recommendation_for_careSee a dentist at your earliest convenience";0,609850450498274;1,18045616422178;NA;0,810129943466671;NA;NA;NA
-"Systolic_Blood_pres_2nd_rdg_mm_Hg";0,602637779796098;NA;0,091399653160821;NA;2,99312464278979;1,73325387805465;2,03984683111123
-"Ever_told_you_have_Hepatitis_C";NA;2,15976271842784;NA;0,878577539824585;NA;NA;NA
-"Ever_been_told_you_have_asthma";NA;1,25623621049081;0,0728325136477056;1,16208470123586;NA;NA;NA
-"Overall_recommendation_for_careSee a dentist within the next 2 weeks";NA;0,798802777645564;NA;NA;NA;NA;NA
-"X_of_people_who_live_here_smoke_tobacco2 household members are smokers";NA;0,630315693608345;NA;0,426674787774721;NA;NA;NA
-"Body_Mass_Index_kg_m_2";NA;NA;0,127123882742711;NA;1,18714620563394;0,726582042232797;0,533595647464018
-"Systolic_Blood_pres_3rd_rdg_mm_Hg";NA;NA;-0,0606179248939035;NA;2,80649370632745;1,68100707810467;0,77014376061536
-"Systolic_Blood_pres_1st_rdg_mm_Hg";NA;NA;NA;NA;2,86353724373706;0,538050688214128;1,07393365127525
-"Weight_kg";NA;NA;NA;NA;0,67744599494467;-0,024518639083153;0,296040406923746
-"Total_number_of_people_in_the_Household";NA;NA;NA;NA;0,55579590460157;NA;NA
-"Total_number_of_people_in_the_Family";NA;NA;NA;NA;0,392843264256158;NA;NA
+"Age_in_years_at_screening";6,174;NA;0,149;NA;6,053;8,224;7,832
+"high_cholesterol_level";5,485;5,947;7,217;6,644;2,775;2,445;3,163
+"Doctor_told_you_have_diabetes";2,485;4,156;4,969;4,5;1,006;1,036;1,129
+"Doctor_ever_said_you_were_overweight";2,112;2,894;3,722;3,494;NA;0,896;0,865
+"Ever_told_doctor_had_trouble_sleeping";1,92;2,357;2,716;2,784;NA;0,199;0,277
+"On_special_diet";1,336;2,096;0,311;2,037;NA;NA;NA
+"Systolic_Blood_pres_2nd_rdg_mm_Hg";0,716;NA;0,019;NA;2,991;1,94;2,279
+"Vitamin_D_D2_D3_mcg";0,633;NA;NA;NA;NA;NA;NA
+"Ever_been_told_you_have_asthma";0,56;NA;NA;1,015;NA;NA;NA
+"Phosphorus_mg";0,496;NA;NA;NA;NA;NA;NA
+"Ever_told_you_have_Hepatitis_C";NA;2,289;NA;1,146;NA;NA;NA
+"Total_number_of_people_in_the_Household6";NA;1,633;NA;NA;NA;NA;NA
+"Ever_told_you_have_Hepatitis_B";NA;1,474;NA;NA;NA;NA;NA
+"Vigorous_recreational_activities";NA;1,239;NA;0,999;NA;NA;NA
+"VAR_TRAVAIL";NA;1,128;NA;0,786;NA;NA;NA
+"Body_Mass_Index_kg_m_2";NA;NA;0,049;NA;1,047;0,501;0,462
+"Systolic_Blood_pres_3rd_rdg_mm_Hg";NA;NA;-0,159;NA;2,705;1,762;1,648
+"Weight_kg";NA;NA;-0,189;NA;0,689;NA;-0,026
+"X_of_people_who_live_here_smoke_tobaccoNo one in houseold is a smoker";NA;NA;NA;0,773;NA;NA;NA
+"Systolic_Blood_pres_1st_rdg_mm_Hg";NA;NA;NA;NA;3,124;0,445;0,952
+"Total_number_of_people_in_the_Household";NA;NA;NA;NA;0,383;NA;NA
+"Total_number_of_people_in_the_Family";NA;NA;NA;NA;0,224;NA;NA
+"Diastolic_Blood_pres_1st_rdg_mm_Hg";NA;NA;NA;NA;NA;0,126;NA

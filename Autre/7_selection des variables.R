@@ -12,7 +12,9 @@ library(dplyr)
 don <- read.csv("data/nhanes_hyper_mice.csv")
 don$X <- NULL
 levels(don$Y) <- c(0,1)
-
+summary(don)
+don <- don[-which(don$Doctor_told_you_have_diabetes=="Borderline"),]
+levels(don$Doctor_told_you_have_diabetes)[1] <- "No"
 XX <- as.matrix(model.matrix(~.,don)[,-ncol(model.matrix(~.,don))])
 YY <- as.matrix(model.matrix(~.,don)[,ncol(model.matrix(~.,don))])
 
@@ -31,14 +33,14 @@ variable_imp <- function(x,k=10,t=1,mot=""){
   colnames(tempo)[2] <-  "importance"
   tempo[,1] <- gsub("YES$","",tempo[,1],ignore.case = TRUE)
   tempo[,1] <- gsub("NO$","",tempo[,1],ignore.case = TRUE)
-  tempo[,2] <- (tempo[,2]-mean(tempo[,2]))/sqrt(var(tempo[,2])) # on centre réduit
+  tempo[,2] <- round((tempo[,2]-mean(tempo[,2]))/sqrt(var(tempo[,2])),3) # on centre réduit
   tempo <- arrange(tempo, desc(importance))[1:k,]
   colnames(tempo)[2] <-  paste("imp",mot,sep = "_")
   tempo$rank <- seq(1:k)
   colnames(tempo)[3] <- paste("rang",mot,sep = "_")
   return(tempo)
 }
-
+set.seed(1234)
 # 1)Importance variable pour le modele logistique
 mod_log <- glm(Y~.,data=don,family="binomial")
 varimplog <- variable_imp(x=mod_log,t=1,mot="log")
@@ -46,17 +48,17 @@ varimplog <- variable_imp(x=mod_log,t=1,mot="log")
 # 2)Importance variable pour le modele ridge
 tmp <- cv.glmnet(XX,YY,alpha=0,family="binomial")
 mod_ridge  <- glmnet(XX,YY,alpha=0,lambda=tmp$lambda.min, family="binomial")
-varimpridge <- variable_imp(x=mod_ridge$beta,t=2,mot="ridge")
+varimpridge <- variable_imp(x=abs(mod_ridge$beta),t=2,mot="ridge")
 
 # 3)Importance variable pour le modele lasso (colnames(XX)[mod_lasso$beta@i])
 tmp <- cv.glmnet(XX,YY, alpha=1, family="binomial")
 mod_lasso <- glmnet(XX,YY,alpha=1, lambda =tmp$lambda.1se,family="binomial" )
-varimplasso <- variable_imp(x=mod_lasso$beta,t=2, mot="lasso")
+varimplasso <- variable_imp(x=abs(mod_lasso$beta),t=2, mot="lasso")
 
 # 4)Importance variable pour le modele elastic
 tmp <- cv.glmnet(XX,YY, alpha=0.5, family="binomial")
 mod_elastic <- glmnet(XX,YY,alpha = 0.5, lambda = tmp$lambda.min, family="binomial")
-varimpelastic <- variable_imp(mod_elastic$beta,t=2,mot = "elastic")
+varimpelastic <- variable_imp(abs(mod_elastic$beta),t=2,mot = "elastic")
 
 # 5)Importance variable pour le modele Foret
 mod_foret <- randomForest(Y~., data = don, ntree=500)
